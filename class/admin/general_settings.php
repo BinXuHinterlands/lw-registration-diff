@@ -129,6 +129,33 @@ if(isset($message) && $message!=""){
                         </select>
 					</div>
           		</div>
+
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="first_name" class="invitation_label"><?php echo __('Direct Starlight Registration Page', 'lw_registration'); ?></label>
+						<select class="multiple-select required" style="max-width:100%; width:100%; " name="lw_general_settings[direct_starlight_registration]">
+							<option value=""><?php echo __('Select', 'lw_registration'); ?></option>
+							<?php foreach($all_pages as $single_page){ 
+								$selected='' ; 
+								if(isset($lw_general_settings['direct_starlight_registration']) && $lw_general_settings['direct_starlight_registration']==$single_page['id']) { 
+									$selected="selected='selected'" ; 
+								} 
+								echo '<option value="'.$single_page['id'].'" '.$selected.'>'.$single_page['title'].' (Page ID: '.$single_page['id'].')</option>'; 
+							} ?>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-md-12">
+					<div class="form-group">
+						<label for="enable_direct_starlight_access" class="invitation_label"><?php echo __('Enable Direct Starlight Registration', 'lw_registration'); ?></label>
+						<select class="form-control" name="lw_general_settings[enable_direct_starlight_access]">
+							<option value="0" <?php echo (isset($lw_general_settings['enable_direct_starlight_access']) && $lw_general_settings['enable_direct_starlight_access'] == 0) ? 'selected' : ''; ?>><?php echo __('Disabled', 'lw_registration'); ?></option>
+							<option value="1" <?php echo (isset($lw_general_settings['enable_direct_starlight_access']) && $lw_general_settings['enable_direct_starlight_access'] == 1) ? 'selected' : ''; ?>><?php echo __('Enabled', 'lw_registration'); ?></option>
+						</select>
+						<small class="form-text text-muted">Enable or disable the direct access to the Known to Starlight registration form. When disabled, the page will display a message indicating that the form is temporarily unavailable.</small>
+					</div>
+				</div>
                 
                 <div class="col-md-12">
              		<div class="form-group">

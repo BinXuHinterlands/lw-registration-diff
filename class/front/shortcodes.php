@@ -18,7 +18,7 @@ if (!class_exists('LW_REGISTRATION_SHORTCODES'))
 
 			
 
-			$sortcodeArray=array('lw_registration','lw_invitation','lw_login','lw_today_birthday');	
+			$sortcodeArray=array('lw_registration','lw_invitation','lw_login','lw_today_birthday','lw_direct_starlight_registration');	
 
 			foreach($sortcodeArray as $single)
 
@@ -50,6 +50,15 @@ if (!class_exists('LW_REGISTRATION_SHORTCODES'))
 			return $content;
 		}
 	}
+	public function lw_direct_starlight_registration($att){
+        if(!is_admin()){
+            ob_start();
+            include('shortcode-direct-starlight.php');
+            $content = ob_get_contents();
+            ob_end_clean();
+            return $content;
+        }
+    }
 	public function lw_invitation($att){
 		if(!is_admin()){
 			ob_start();
