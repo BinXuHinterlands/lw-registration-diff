@@ -21,6 +21,28 @@ if (!class_exists('LW_REGISTRATION_FRONT_CLASS')) {
 			}
 			
 			add_action('template_notices', array(&$this,'lw_template_notices'));
+
+			add_action('wp', array($this, 'add_body_class_filters'));
+		}
+
+		public function add_body_class_filters() {
+			global $post;
+			if (is_singular() && is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'lw_direct_starlight_registration')) {
+				add_filter('body_class', array($this, 'add_direct_starlight_body_class'));
+				// Add class to the HTML tag
+				add_filter('language_attributes', array($this, 'add_direct_starlight_html_class'));
+			}
+		}
+
+		public function add_direct_starlight_body_class($classes) {
+			$classes[] = 'page-direct-starlight';
+			return $classes;
+		}
+
+		// New: Function to add a class to the HTML tag
+		public function add_direct_starlight_html_class($output) {
+			$output .= ' class="direct_starlight_registration"';
+			return $output;
 		}
 
 		public function lw_registration_styles_and_script(){
@@ -28,13 +50,30 @@ if (!class_exists('LW_REGISTRATION_FRONT_CLASS')) {
 			
 			$pageId = get_the_ID();
 			
-			if($pageId == $lw_general_settings['login_redirect'] || $pageId==$lw_general_settings['invitation'] || $pageId==$lw_general_settings['registration'] || $pageId==$lw_general_settings['login']){
+			// Check if the current page contains a specific shortcode
+			$has_shortcode = false;
+			if (is_singular()) {
+				global $post;
+				$has_shortcode = has_shortcode($post->post_content, 'lw_direct_starlight_registration') || 
+						has_shortcode($post->post_content, 'lw_registration') || 
+						has_shortcode($post->post_content, 'lw_invitation') || 
+						has_shortcode($post->post_content, 'lw_login');
+			}
+			
+			// If the current page is the one specified in the settings or contains the related shortcode, load the styles and scripts
+			if($pageId == $lw_general_settings['login_redirect'] || 
+			   $pageId == $lw_general_settings['invitation'] || 
+			   $pageId == $lw_general_settings['registration'] || 
+			   $pageId == $lw_general_settings['login'] || 
+			   $pageId == $lw_general_settings['direct_starlight_registration'] || 
+			   $has_shortcode){
+				
 				wp_enqueue_style( 'lw_registration_all.min.css', '//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',array(),time());
 				wp_enqueue_style( 'LW-style.css',LW_REGISTRATION_URL.'/assets/css/LW-style.css',array(),strval(filemtime(plugin_dir_path(__FILE__).'../../assets/css/LW-style.css')));
 			
 				wp_enqueue_script( 'lw_registration_jquery.validate.min', LW_REGISTRATION_ASSETS_URL . '/js/jquery.validate.min.js',array(),time());
 				wp_enqueue_script( 'lw_registration-js', LW_REGISTRATION_ASSETS_URL . '/js/lw_registration.js',array(),strval(filemtime(plugin_dir_path(__FILE__).'../../assets/js/lw_registration.js')),true);
-                if($pageId==$lw_general_settings['registration']){
+                if($pageId==$lw_general_settings['registration'] || $pageId==$lw_general_settings['direct_starlight_registration']){
                     wp_enqueue_script( 'lw_recaptcha-js', 'https://www.google.com/recaptcha/api.js?render=6LdX0hspAAAAAGKczmfpxU3PON-KxPYZztLtFMOG');
                 }
 				wp_localize_script( 'lw_registration-js', 'lw_registration', array(
@@ -234,6 +273,35 @@ if (!class_exists('LW_REGISTRATION_FRONT_CLASS')) {
 					);
 						
 				}
+
+				if($lw_form_type=="form_a_direct"){
+					$redirect= get_the_permalink($lw_general_settings['redirect_registration_known_to_starlight']);
+					if(!empty($postData['lw_registration_guardian_email'])){
+						$cc_email_address[$postData['lw_registration_guardian_email']] = $postData['lw_registration_guardian_email'];
+					}
+					
+					$user_login = $postData['lw_username'];
+					$user_email = $postData['lw_registration_email_address'];
+					$first_name = $postData['lw_first_name'];
+					$last_name = $postData['lw_last_name'];
+					$display_name = $postData['lw_first_name'].' '.$postData['lw_last_name'];
+					$updatedMetaData = array(
+											'lw_form_type'=>$postData['lw_form_type'],
+											'lw_registration_pronouns'=>$postData['lw_registration_pronouns'],
+											'lw_registration_birthday'=>$postData['lw_birthday_year'].'-'.$postData['lw_birthday_month'].'-'.$postData['lw_birthday_day'],
+											'lw_referral_source'=>$postData['lw_referral_source'], // New field
+											'lw_state'=>$postData['lw_state'], // New field
+											'lw_area_code'=>$postData['lw_area_code'],     
+											'lw_emergency_area_code'=>$postData['lw_emergency_area_code'],
+											'lw_mobilephone'=>str_replace('0', '', substr($postData['lw_mobilephone'], 0, 1)).substr($postData['lw_mobilephone'], 1),
+											'lw_registration_guardian_first_name'=>$postData['lw_registration_guardian_first_name'],
+											'lw_registration_guardian_last_name'=>$postData['lw_registration_guardian_last_name'],
+											'lw_registration_guardian_email'=>$postData['lw_registration_guardian_email'],
+											'lw_registration_guardian_mobile_phone'=>str_replace('0', '', substr($postData['lw_registration_guardian_mobile_phone'], 0, 1)).substr($postData['lw_registration_guardian_mobile_phone'], 1),
+											'lw_contact_you'=>$postData['lw_contact_you'],
+											'lw_registration_source'=>'direct' // Source tracking
+					);
+				}
 				
 				if($lw_form_type=="form_b"){
 					$redirect= get_the_permalink($lw_general_settings['redirect_registration_known_to_wish_granting']);
@@ -323,6 +391,13 @@ if (!class_exists('LW_REGISTRATION_FRONT_CLASS')) {
             		clean_object_term_cache( $user_id, 'blocked_status' );
 					
 							
+				}else if($lw_form_type=="form_a_direct"){
+					$user_id = wp_insert_user($user_data);
+					wp_set_object_terms( $user_id, 84, 'profile_type', false );
+					clean_object_term_cache( $user_id, 'profile_type' );
+			
+					wp_set_object_terms( $user_id, 'Not Blocked', 'blocked_status', false );
+					clean_object_term_cache( $user_id, 'blocked_status' );
 				}else if($lw_form_type=="form_b"){
 					//$user_id = bp_core_signup_user($user_login,$postData['lw_password'],$user_email,array('field_1'=>$display_name,'field_2'=>$last_name,'field_3'=>$first_name,'profile_field_ids'=>"1,2,3",'password'=>md5($postData['lw_password'])));	
 					//$redirect = get_the_permalink($lw_general_settings['pending_registration']);	
@@ -354,7 +429,7 @@ if (!class_exists('LW_REGISTRATION_FRONT_CLASS')) {
 					update_user_meta($user_id, 'birthmmdd' . $birthday_string, $birthday_string);
 					
 					do_action ('lw_crm_sync' , $user_id );
-					//update member type / profile type 'livewire-member' to registered members
+					// Update member type / profile type 'livewire-member' to registered members
 						$post_id = $user_id; 
 						$taxonomy_term_id = 86; 
 

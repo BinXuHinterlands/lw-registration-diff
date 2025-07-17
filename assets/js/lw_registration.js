@@ -497,7 +497,7 @@ jQuery(document).ready(function () {
   // );
 
   var lw_form_type = jQuery("input[name='lw_form_type']").val();
-  if (lw_form_type == "form_a" || lw_form_type == "form_c") {
+  if (lw_form_type == "form_a" || lw_form_type == "form_c" || lw_form_type == "form_a_direct") {
     LwshowTab(LwcurrentTab);
   }
 

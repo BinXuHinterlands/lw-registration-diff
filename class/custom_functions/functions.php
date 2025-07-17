@@ -132,7 +132,7 @@ if($current_user->ID>0 && $pageId == $lw_general_settings['login_redirect']){
 	
 echo '<div class="container">
 <div class="lw-welcome-wrapper">';
-		if($lw_form_type=="form_a"&& is_user_pending($current_user->ID)){
+		if(($lw_form_type=="form_a" || $lw_form_type=="form_a_direct") && is_user_pending($current_user->ID)){
 		echo '<div class="lw-welcome-notice">
 			<div class="lw-welcome-notice-icon">
 				<span>🛈</span>

@@ -19,13 +19,28 @@ $lw_registration_pronouns = get_user_meta( $user_id, 'lw_registration_pronouns',
 $lw_sibling_spent_time = get_user_meta( $user_id, 'lw_sibling_spent_time', true);
 $lw_form_type= get_user_meta( $user_id, 'lw_form_type', true);
 $lw_registration_guardian_email= get_user_meta( $user_id, 'lw_registration_guardian_email', true);
+$lw_referral_source = get_user_meta( $user_id, 'lw_referral_source', true);
+$lw_state = get_user_meta( $user_id, 'lw_state', true);
 
 
  ?>
-           
+            <h2>Registration Details</h2>
+            <table class="form-table">
+                <tr>
+                    <th>Who referred you to Livewire</th>
+                    <td>
+                        <input type="text" name="lw_referral_source" value="<?php echo $lw_referral_source; ?>" class="form-control" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>State</th>
+                    <td>
+                        <input type="text" name="lw_state" value="<?php echo $lw_state; ?>" class="form-control" />
+                    </td>
+                </tr>
+            </table>
         	<h3>Registration Info: most data is deleted once sent to CRM</h3>
              <table class="form-table">
-            
             <tr>
             	<th>Registration Form</th>
                 <td>
