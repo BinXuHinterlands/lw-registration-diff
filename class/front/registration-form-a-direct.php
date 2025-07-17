@@ -7,7 +7,7 @@ $lw_general_settings = get_option('lw_general_settings');
          <h2>Became a member</h2>
          <div class="lw-forma-wrapper">
             <form id="LwRegistrationForm" class="lw-form" method="post">
-               <input type="hidden" name="lw_form_type" id="lw_form_type" value="form_a" />
+               <input type="hidden" name="lw_form_type" id="lw_form_type" value="form_a_direct" />
                <input type="hidden" name="lw_invitation_id" value="<?php echo isset($prePouplateData['id'])?$prePouplateData['id']:"" ?>" />
                <input type="hidden" name="action" value="lw_registration_action" />
                <div class="lw-tab2">
@@ -97,6 +97,14 @@ $lw_general_settings = get_option('lw_general_settings');
 
 </span></div></label>
                      <input type="email" placeholder="Your Email Address" value="<?php echo isset($prePouplateData['email'])?stripcslashes($prePouplateData['email']):""; ?>" class="required email validateEmail validateEmailEdu"  id="lw_email_address" name="lw_registration_email_address">
+                  </div>
+                  <div class="lw-form-group">
+                     <label>Who referred you to Livewire<span class="lw_required_label">*</span> <div class="lw-tooltip">?<span class="lw-tooltiptext">Please tell us who connected you with Livewire. This helps us understand how people find our services.</span></div></label>
+                     <input type="text" class="required lettersonly" placeholder="Who referred you (name)" name="lw_referral_source">
+                  </div>
+                  <div class="lw-form-group">
+                     <label>State<span class="lw_required_label">*</span><div class="lw-tooltip">?<span class="lw-tooltiptext">Your state helps us schedule a validation call in your timezone.</span></div></label>
+                     <input type="text" class="required lettersonly" placeholder="e.g. NSW, VIC" name="lw_state">
                   </div>
                   <div class="lw-form-group lw_mobilephone">
                  <label>Your Phone Number<span class="lw_required_label" style="visibility:hidden;">*</span><div class="lw-tooltip">?<span class="lw-tooltiptext">If you are under 18 you can choose to share your phone number with us. If you are over 18 we need this to contact you about your account</span></div></label>

@@ -35,12 +35,17 @@ if (!class_exists('LW_REGISTRATION_ADMIN_CLASS')) {
 		public function lw_profile_fields_callback($user_id){
 			global $wpdb;
 			//indian codes to update user meta
-			$updatedMetaData = array();
+			$updatedMetaData = array(
+				'lw_referral_source' => $_POST['lw_referral_source'],
+				'lw_state' => $_POST['lw_state']
+			);
 			$lw_form_type = $_POST['lw_form_type'];
+
 				if($lw_form_type=="form_a"){
 					$today_birtday = $_POST['form_a_lw_registration_birthday'];
 					
-					$updatedMetaData = array(
+					$updatedMetaData = array_merge($updatedMetaData, 
+						array(
 											'lw_form_type'=>$_POST['lw_form_type'],
 											'lw_registration_birthday'=>$_POST['form_a_lw_registration_birthday'],
 											'lw_registration_pronouns'=>$_POST['form_a_lw_registration_pronouns'],
@@ -52,7 +57,7 @@ if (!class_exists('LW_REGISTRATION_ADMIN_CLASS')) {
 											'lw_registration_guardian_email'=>$_POST['form_a_lw_registration_guardian_email'],
 											'lw_registration_guardian_mobile_phone'=>$_POST['form_a_lw_registration_guardian_mobile_phone'],
 											'lw_contact_you'=>$_POST['form_a_lw_contact_you']
-					);
+					));
 						
 				}
 				

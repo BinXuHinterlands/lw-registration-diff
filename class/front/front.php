@@ -73,9 +73,9 @@ if (!class_exists('LW_REGISTRATION_FRONT_CLASS')) {
 			
 				wp_enqueue_script( 'lw_registration_jquery.validate.min', LW_REGISTRATION_ASSETS_URL . '/js/jquery.validate.min.js',array(),time());
 				wp_enqueue_script( 'lw_registration-js', LW_REGISTRATION_ASSETS_URL . '/js/lw_registration.js',array(),strval(filemtime(plugin_dir_path(__FILE__).'../../assets/js/lw_registration.js')),true);
-                // if($pageId==$lw_general_settings['registration'] || $pageId==$lw_general_settings['direct_starlight_registration']){
-                //     wp_enqueue_script( 'lw_recaptcha-js', 'https://www.google.com/recaptcha/api.js?render=6LdX0hspAAAAAGKczmfpxU3PON-KxPYZztLtFMOG');
-                // }
+                if($pageId==$lw_general_settings['registration'] || $pageId==$lw_general_settings['direct_starlight_registration']){
+                    wp_enqueue_script( 'lw_recaptcha-js', 'https://www.google.com/recaptcha/api.js?render=6LdX0hspAAAAAGKczmfpxU3PON-KxPYZztLtFMOG');
+                }
 				wp_localize_script( 'lw_registration-js', 'lw_registration', array(
                         "ajaxUrl"=>admin_url( 'admin-ajax.php' ),
                         "site_key" => get_option('recaptcha_site_key')
